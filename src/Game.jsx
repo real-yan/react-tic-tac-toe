@@ -18,8 +18,9 @@ function Game() {
     const [isXNext, setIsXNext] = useState(true);
     const [history, setHistory] = useState([{values, localizacao: []}]);
     const [stepNumber, setStepNumber] = useState(0);
+    const [historyOrder, setHistoryOrder] = useState({reversed: false});
 
-    const gameOver = calculateGameOver(history[stepNumber].values);
+    const gameOver = calculateGameOver(history[stepNumber].values, stepNumber);
     
     const handleClick = (i) => {      
         const currentHistory = history.slice(0, stepNumber + 1);
@@ -35,7 +36,29 @@ function Game() {
         setIsXNext(!isXNext);
         setHistory(currentHistory.concat([{values: currentValue, localizacao: locENUM[i]}]));
         setStepNumber(currentHistory.length);
-    }    
+    }
+    
+    const renderHistory = (reveresed) => {
+        const arrMoves = history.map((_step, move) => {
+
+            let status = 'inactive-move';
+            if(stepNumber && stepNumber === move) {
+                status = 'active-move';
+            }
+
+            return (
+                <li key={move}>
+                    <button className={status} onClick={() => jumpTo(move)}>
+                        {!move ? 
+                            "Go to start" : 
+                            `Go to move #${move} (${history[move].localizacao[0]}, ${history[move].localizacao[1]})`}
+                    </button>
+                </li>
+            )
+        })
+
+        return !reveresed ? arrMoves : arrMoves.reverse();
+    }
 
     const jumpTo = (step) => {
         setStepNumber(step);
@@ -53,34 +76,24 @@ function Game() {
             
             <div className="game-history">
                 <div>
-                    { gameOver && gameOver.winner ? `Winner: ${gameOver.winner}` : `Next player: ${(isXNext ? 'X' : 'O')}` }
+                    { gameOver ? 
+                        gameOver.winner ? `Winner: ${gameOver.winner}` : 'It is a tie' :
+                        `Next player: ${(isXNext ? 'X' : 'O')}` }
                 </div>
-                
-                <ol>
-                    {history.map((_step, move) => {
 
-                        let status = 'inactive-move';
-                        if(stepNumber && stepNumber === move) {
-                            status = 'active-move';
-                        }
-
-                        return (
-                            <li key={move}>
-                                <button className={status} onClick={() => jumpTo(move)}>
-                                    {!move ? 
-                                        "Go to start" : 
-                                        `Go to move #${move} (${history[move].localizacao[0]}, ${history[move].localizacao[1]})`}
-                                </button>
-                            </li>
-                        )
-                    })}
+                <ol {...historyOrder}>
+                    { 
+                        renderHistory(historyOrder.reversed) 
+                    }
                 </ol>
+
+                <button onClick={() => setHistoryOrder({reversed: !historyOrder.reversed})}>Toggle</button>
             </div>
         </div>
     )
 }
 
-const calculateGameOver = (squares) => {
+const calculateGameOver = (squares, stepNumber) => {
     const lines = [
         [0, 1, 2],
         [3, 4, 5],
@@ -97,6 +110,10 @@ const calculateGameOver = (squares) => {
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
             return { winner: squares[a], positions: [a, b, c] };
         }
+    }
+
+    if(stepNumber === 9) {
+        return { winner: null };
     }
     
     return null;
