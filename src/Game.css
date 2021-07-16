@@ -7,3 +7,7 @@
 .game-history {
     margin-left: 15px;
 }
+
+.active-move {
+    font-weight: 600;
+}
