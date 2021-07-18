@@ -31,17 +31,13 @@ function Board(props) {
                     <Square key={pos} 
                         value={props.values[pos]}
                         highlightWinner={winnerSquare} 
-                        onClick={() => props.handleClick(pos, col + 1, row + 1)} />
+                        onClickHandler={() => props.onClickHandler(pos, col + 1, row + 1)} />
                 )
             }) 
         )
     }
 
-    return (
-        <> 
-            { renderBoard(3, 3) }
-        </>
-    )
+    return <> { renderBoard(3, 3) } </>
 }
 
 export default Board

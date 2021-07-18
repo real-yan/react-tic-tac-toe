@@ -11,14 +11,14 @@ import History from '../../molecules/History'
 import './styles.css'
 
 function Game() {
+    const { currentLangData } = useContext(LangContext);
+    
     const [values, setValues] = useState(Array(9).fill(null));
     const [isXNext, setIsXNext] = useState(true);
     const [history, setHistory] = useState([{values, localizacao: []}]);
     const [stepNumber, setStepNumber] = useState(0);
     const [player1, setPlayer1] = useState('X');
     const [player2, setPlayer2] = useState('O');
-
-    const { currentLangData } = useContext(LangContext);
 
     const gameOver = calculateGameOver(history[stepNumber].values, stepNumber, player1, player2);
     
@@ -55,19 +55,23 @@ function Game() {
         <div className="game-wrapper">
             <div className="players">
                 <TextInput 
-                    name="player1" 
+                    name="player1"
                     label={currentLangData.playerSelection.player1} 
-                    handleInputChange={handleInputChange} />
+                    placeholder={currentLangData.playerSelection.playerPlaceHolder
+                        .replace('#HOLDER#', currentLangData.playerSelection.player1)} 
+                    inputChangeHandler={handleInputChange} />
                 <TextInput 
                     name="player2" 
                     label={currentLangData.playerSelection.player2} 
-                    handleInputChange={handleInputChange} />
+                    placeholder={currentLangData.playerSelection.playerPlaceHolder
+                        .replace('#HOLDER#', currentLangData.playerSelection.player2)} 
+                    inputChangeHandler={handleInputChange} />
             </div>
 
             <div className="game-board">
                 <Board 
                     values={history[stepNumber].values} 
-                    handleClick={handleClick} 
+                    onClickHandler={handleClick} 
                     highlightWinner={gameOver && gameOver.positions} />
             </div>
             

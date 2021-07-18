@@ -10,13 +10,14 @@ import './styles.css'
 const App = () => {
     const { currentLangData, lang, switchLang } = useContext(LangContext); 
 
-    const onClickHandler = () => {
+    const handleClick = () => {
         switchLang((lang === 'en-us' ? 'pt-br' : 'en-us'));                
     }
+    
     return (
         <div className='app-wrapper'>
             <Game />
-            <Button onClickHandler={onClickHandler}>{ currentLangData.changeLanguage }</Button>
+            <Button onClickHandler={handleClick}>{ currentLangData.changeLanguage }</Button>
         </div>
     )
 }

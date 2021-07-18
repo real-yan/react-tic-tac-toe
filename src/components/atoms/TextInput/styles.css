@@ -1,0 +1,9 @@
+.textinput-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+input {
+    margin-left: 10px;
+}

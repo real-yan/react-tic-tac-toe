@@ -1,16 +1,15 @@
-import React, { useContext } from 'react'
-
-import LangContext from '../../../context/LangContext'
+import React from 'react'
+import './styles.css'
 
 const TextInput = (props) => {
-    const { currentLangData } = useContext(LangContext);
     return (
-        <span>
-            {props.label}: <input 
+        <span className="textinput-wrapper">
+            <span>{props.label}:</span>
+            <input 
                 type="text" 
-                id={props.name}  
-                placeholder={currentLangData.playerSelection.playerPlaceHolder.replace('#HOLDER#', props.label)} 
-                onChange={props.handleInputChange} />
+                id={props.name} 
+                placeholder={props.placeholder} 
+                onChange={props.inputChangeHandler} />
         </span>
     )
 }

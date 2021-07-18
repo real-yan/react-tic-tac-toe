@@ -9,7 +9,7 @@ const LangContext = React.createContext({
 export default LangContext;
 
 export const LangProvider = (props) => {
-    const [lang, setLang] = useState('pt-br');
+    const [lang, setLang] = useState('en-us');
 
     const switchLang = (lang) => {
       setLang(lang);

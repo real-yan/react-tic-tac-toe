@@ -3,24 +3,16 @@ import React, { useState, useContext } from 'react'
 import Button from '../../atoms/Button';
 import LangContext from '../../../context/LangContext'
 
-import './styles.css'
-
 const History = (props) => {
-    const [historyOrder, setHistoryOrder] = useState({reversed: false});
-
     const { currentLangData } = useContext(LangContext);
+    
+    const [reversed, setReversed] = useState(false);
 
-    const renderHistory = (reveresed) => {
+    const renderHistory = (reversed) => {
         const arrMoves = props.moveHistory.map((_step, move) => {
-
-            let status = 'inactive-move';
-            if(props.stepNumber && props.stepNumber === move) {
-                status = 'active-move';
-            }
-            console.log(status);
             return (
                 <li key={move}>
-                    <Button className={status} onClickHandler={() => props.jumpTo(move)}>
+                    <Button highlighted={props.stepNumber && props.stepNumber === move} onClickHandler={() => props.jumpTo(move)}>
                         {!move ? 
                             currentLangData.history.start : 
                             `${currentLangData.history.start}${move} (${props.moveHistory[move].localizacao[0]}, ${props.moveHistory[move].localizacao[1]})`}
@@ -29,18 +21,16 @@ const History = (props) => {
             )
         })
 
-        return !reveresed ? arrMoves : arrMoves.reverse();
+        return !reversed ? arrMoves : arrMoves.reverse();
     }
     
     return (
         <>
-            <ol {...historyOrder}>
-                { 
-                    renderHistory(historyOrder.reversed) 
-                }
+            <ol reversed={reversed}>
+                { renderHistory(reversed) }
             </ol>
 
-            <Button onClickHandler={() => setHistoryOrder({reversed: !historyOrder.reversed})}>
+            <Button onClickHandler={() => setReversed(!reversed)}>
                 {currentLangData.history.toggle}
             </Button>
         </>

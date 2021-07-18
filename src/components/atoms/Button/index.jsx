@@ -1,8 +1,10 @@
 import React from 'react'
+import './styles.css'
 
-const Button = (props) => {
+const Button = (props) => {   
+    const highlighted = props.highlighted && 'highlighted'; 
     return (
-        <button className={props.className} onClick={props.onClickHandler}>
+        <button className={highlighted} onClick={props.onClickHandler}>
             {props.children}
         </button>
     )
