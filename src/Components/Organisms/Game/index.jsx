@@ -1,6 +1,12 @@
 import React, { useState } from 'react'
-import Board from './Board'
-import './Game.css'
+
+import TextInput from '../../Atoms/TextInput'
+import GameStatus from '../../Atoms/GameStatus'
+
+import Board from '../../Molecules/Board'
+import History from '../../Molecules/History'
+
+import './styles.css'
 
 const locENUM = {}
 locENUM[0] = [1, 1];
@@ -18,9 +24,10 @@ function Game() {
     const [isXNext, setIsXNext] = useState(true);
     const [history, setHistory] = useState([{values, localizacao: []}]);
     const [stepNumber, setStepNumber] = useState(0);
-    const [historyOrder, setHistoryOrder] = useState({reversed: false});
+    const [player1, setPlayer1] = useState('X');
+    const [player2, setPlayer2] = useState('O');
 
-    const gameOver = calculateGameOver(history[stepNumber].values, stepNumber);
+    const gameOver = calculateGameOver(history[stepNumber].values, stepNumber, player1, player2);
     
     const handleClick = (i) => {      
         const currentHistory = history.slice(0, stepNumber + 1);
@@ -37,27 +44,13 @@ function Game() {
         setHistory(currentHistory.concat([{values: currentValue, localizacao: locENUM[i]}]));
         setStepNumber(currentHistory.length);
     }
-    
-    const renderHistory = (reveresed) => {
-        const arrMoves = history.map((_step, move) => {
 
-            let status = 'inactive-move';
-            if(stepNumber && stepNumber === move) {
-                status = 'active-move';
-            }
-
-            return (
-                <li key={move}>
-                    <button className={status} onClick={() => jumpTo(move)}>
-                        {!move ? 
-                            "Go to start" : 
-                            `Go to move #${move} (${history[move].localizacao[0]}, ${history[move].localizacao[1]})`}
-                    </button>
-                </li>
-            )
-        })
-
-        return !reveresed ? arrMoves : arrMoves.reverse();
+    const handleInputChange = (event) => {
+        if(event.target.id === 'player1') {
+            setPlayer1(event.target.value);
+        } else {
+            setPlayer2(event.target.value);   
+        }
     }
 
     const jumpTo = (step) => {
@@ -67,6 +60,11 @@ function Game() {
 
     return (
         <div className="game-wrapper">
+            <div className="players">
+                <TextInput name="player1" label="Player 1" handleInputChange={handleInputChange} />
+                <TextInput name="player2" label="Player 2" handleInputChange={handleInputChange} />
+            </div>
+
             <div className="game-board">
                 <Board 
                     values={history[stepNumber].values} 
@@ -75,25 +73,18 @@ function Game() {
             </div>
             
             <div className="game-history">
-                <div>
-                    { gameOver ? 
-                        gameOver.winner ? `Winner: ${gameOver.winner}` : 'It is a tie' :
-                        `Next player: ${(isXNext ? 'X' : 'O')}` }
-                </div>
-
-                <ol {...historyOrder}>
-                    { 
-                        renderHistory(historyOrder.reversed) 
-                    }
-                </ol>
-
-                <button onClick={() => setHistoryOrder({reversed: !historyOrder.reversed})}>Toggle</button>
+                <GameStatus isXNext={isXNext} gameOver={gameOver} players={{player1, player2}} />
+                <History
+                    moveHistory={history}
+                    stepNumber={stepNumber}
+                    jumpTo={jumpTo}
+                    gameOver={gameOver} />   
             </div>
         </div>
     )
 }
 
-const calculateGameOver = (squares, stepNumber) => {
+const calculateGameOver = (squares, stepNumber, player1, player2) => {
     const lines = [
         [0, 1, 2],
         [3, 4, 5],
@@ -108,7 +99,7 @@ const calculateGameOver = (squares, stepNumber) => {
     for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-            return { winner: squares[a], positions: [a, b, c] };
+            return { winner: (squares[a] === 'X' ? player1 : player2), positions: [a, b, c] };
         }
     }
 

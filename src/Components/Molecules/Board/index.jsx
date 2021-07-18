@@ -1,6 +1,6 @@
 import React from 'react'
-import Square from './Square'
-import './Board.css'
+import Square from '../../Atoms/Square'
+import './styles.css'
 
 function Board(props) {
 

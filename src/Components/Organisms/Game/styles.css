@@ -4,6 +4,16 @@
     display: flex;
 }
 
+.players {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.game-board {
+    margin-left: 15px;
+}
+
 .game-history {
     margin-left: 15px;
 }

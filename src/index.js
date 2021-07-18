@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import Game from './Game';
+import './styles.css';
+import Game from './Components/Organisms/Game';
 
 ReactDOM.render(
   <React.StrictMode>
