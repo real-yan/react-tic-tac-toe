@@ -1,5 +1,5 @@
 import React from 'react'
-import Square from '../../Atoms/Square'
+import Square from '../../atoms/Square'
 import './styles.css'
 
 function Board(props) {
@@ -31,7 +31,7 @@ function Board(props) {
                     <Square key={pos} 
                         value={props.values[pos]}
                         highlightWinner={winnerSquare} 
-                        onClick={() => props.handleClick(pos)} />
+                        onClick={() => props.handleClick(pos, col + 1, row + 1)} />
                 )
             }) 
         )

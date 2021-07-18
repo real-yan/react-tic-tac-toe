@@ -1,6 +1,4 @@
 .game-wrapper {
-    margin-top: 20px;
-    margin-left: 20px;
     display: flex;
 }
 
@@ -16,8 +14,4 @@
 
 .game-history {
     margin-left: 15px;
-}
-
-.active-move {
-    font-weight: 600;
 }

@@ -1,11 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
+import { LangProvider } from './context/LangContext'
+
+import App from './components/templates/App';
+
 import './styles.css';
-import Game from './Components/Organisms/Game';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Game />
+    <LangProvider>
+      <App />
+    </LangProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

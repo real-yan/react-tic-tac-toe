@@ -1,23 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 
-import TextInput from '../../Atoms/TextInput'
-import GameStatus from '../../Atoms/GameStatus'
+import LangContext from '../../../context/LangContext'
 
-import Board from '../../Molecules/Board'
-import History from '../../Molecules/History'
+import TextInput from '../../atoms/TextInput'
+import GameStatus from '../../atoms/GameStatus'
+
+import Board from '../../molecules/Board'
+import History from '../../molecules/History'
 
 import './styles.css'
-
-const locENUM = {}
-locENUM[0] = [1, 1];
-locENUM[1] = [2, 1];
-locENUM[2] = [3, 1];
-locENUM[3] = [1, 2];
-locENUM[4] = [2, 2];
-locENUM[5] = [3, 2];
-locENUM[6] = [1, 3];
-locENUM[7] = [2, 3];
-locENUM[8] = [3, 3];
 
 function Game() {
     const [values, setValues] = useState(Array(9).fill(null));
@@ -27,21 +18,23 @@ function Game() {
     const [player1, setPlayer1] = useState('X');
     const [player2, setPlayer2] = useState('O');
 
+    const { currentLangData } = useContext(LangContext);
+
     const gameOver = calculateGameOver(history[stepNumber].values, stepNumber, player1, player2);
     
-    const handleClick = (i) => {      
+    const handleClick = (pos, col, row) => {      
         const currentHistory = history.slice(0, stepNumber + 1);
         const currentValue = currentHistory[currentHistory.length - 1].values.slice(); 
 
-        if(!!gameOver || !!currentValue[i]) {
+        if(!!gameOver || !!currentValue[pos]) {
             return;
         }
         
-        currentValue[i] = isXNext ? 'X' : 'O';
+        currentValue[pos] = isXNext ? 'X' : 'O';
 
         setValues(currentValue);
         setIsXNext(!isXNext);
-        setHistory(currentHistory.concat([{values: currentValue, localizacao: locENUM[i]}]));
+        setHistory(currentHistory.concat([{values: currentValue, localizacao: [col, row]}]));
         setStepNumber(currentHistory.length);
     }
 
@@ -61,8 +54,14 @@ function Game() {
     return (
         <div className="game-wrapper">
             <div className="players">
-                <TextInput name="player1" label="Player 1" handleInputChange={handleInputChange} />
-                <TextInput name="player2" label="Player 2" handleInputChange={handleInputChange} />
+                <TextInput 
+                    name="player1" 
+                    label={currentLangData.playerSelection.player1} 
+                    handleInputChange={handleInputChange} />
+                <TextInput 
+                    name="player2" 
+                    label={currentLangData.playerSelection.player2} 
+                    handleInputChange={handleInputChange} />
             </div>
 
             <div className="game-board">
