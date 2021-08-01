@@ -1,6 +1,9 @@
 import React, { useState, useContext } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
 import LangContext from '../../../context/LangContext'
+
+import { playerNameChanged, moveMade, nextPlayerChanged } from '../../../reducers/GameSlice'
 
 import TextInput from '../../atoms/TextInput'
 import GameStatus from '../../atoms/GameStatus'
@@ -11,14 +14,16 @@ import History from '../../molecules/History'
 import './styles.css'
 
 function Game() {
-    const { currentLangData } = useContext(LangContext);
+    const { currentLangData } = useContext(LangContext)
     
-    const [values, setValues] = useState(Array(9).fill(null));
-    const [isXNext, setIsXNext] = useState(true);
+    const dispatch = useDispatch()
+    const player1 = useSelector(state => state.game.player1)
+    const player2 = useSelector(state => state.game.player2)
+    const values = useSelector(state => state.game.board)
+    const isXNext = useSelector(state => state.game.isXNext)
+    
     const [history, setHistory] = useState([{values, localizacao: []}]);
     const [stepNumber, setStepNumber] = useState(0);
-    const [player1, setPlayer1] = useState('X');
-    const [player2, setPlayer2] = useState('O');
 
     const gameOver = calculateGameOver(history[stepNumber].values, stepNumber, player1, player2);
     
@@ -30,25 +35,20 @@ function Game() {
             return;
         }
         
-        currentValue[pos] = isXNext ? 'X' : 'O';
-
-        setValues(currentValue);
-        setIsXNext(!isXNext);
+        dispatch(moveMade({ currentBoardState: currentValue, boardPosition: pos }))
+        
         setHistory(currentHistory.concat([{values: currentValue, localizacao: [col, row]}]));
         setStepNumber(currentHistory.length);
     }
 
     const handleInputChange = (event) => {
-        if(event.target.id === 'player1') {
-            setPlayer1(event.target.value);
-        } else {
-            setPlayer2(event.target.value);   
-        }
+        const { id, value } = event.target
+        dispatch(playerNameChanged({ playerNumber: id, name: value }))
     }
 
     const jumpTo = (step) => {
         setStepNumber(step);
-        setIsXNext(step % 2 === 0);
+        dispatch(nextPlayerChanged(step));
     }
 
     return (
