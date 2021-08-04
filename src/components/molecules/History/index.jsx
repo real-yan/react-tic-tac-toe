@@ -12,7 +12,9 @@ const History = (props) => {
         const arrMoves = props.moveHistory.map((_step, move) => {
             return (
                 <li key={move}>
-                    <Button highlighted={props.stepNumber && props.stepNumber === move} onClickHandler={() => props.jumpTo(move)}>
+                    <Button 
+                        highlighted={props.stepNumber && props.stepNumber === move} 
+                        onClickHandler={() => props.jumpTo(move)}>
                         {!move ? 
                             currentLangData.history.start : 
                             `${currentLangData.history.start}${move} (${props.moveHistory[move].localizacao[0]}, ${props.moveHistory[move].localizacao[1]})`}

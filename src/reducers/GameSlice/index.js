@@ -1,9 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    board: Array(9).fill(null),
-    isXNext: true,
-    player1: 'X',
+    moveNumbers: [0],
+    moves: {
+        0: {
+            board: Array(9).fill(null),
+            isXNext: true,  
+        }
+    },
+    player1: 'X', 
     player2: 'O'   
 }
 
@@ -16,11 +21,15 @@ const gameSlice = createSlice({
             state[playerNumber] = !!name ? name : initialState[playerNumber]
         },
         moveMade: (state, action) => {
-            const { currentBoardState, boardPosition } = action.payload
-            currentBoardState[boardPosition] = state.isXNext ? 'X' : 'O'
+            const { previousBoard, isXNext, moveNumber, movePosition } = action.payload
+            state.moveNumbers.push(moveNumber)
             
-            state.boardValues = currentBoardState 
-            state.isXNext = !state.isXNext
+            const newBoard = previousBoard.slice()
+            newBoard[movePosition] = isXNext ? 'X' : 'O'
+
+            state.moves[moveNumber] = {}
+            state.moves[moveNumber].board = newBoard
+            state.moves[moveNumber].isXNext = !isXNext        
         },
         nextPlayerChanged: (state, action) => {
             const stepNumber = action.payload

@@ -15,16 +15,17 @@ import './styles.css'
 
 function Game() {
     const { currentLangData } = useContext(LangContext)
+
+    const [stepNumber, setStepNumber] = useState(0);
     
     const dispatch = useDispatch()
     const player1 = useSelector(state => state.game.player1)
     const player2 = useSelector(state => state.game.player2)
-    const values = useSelector(state => state.game.board)
-    const isXNext = useSelector(state => state.game.isXNext)
+    const values = useSelector(state => state.game.moves[stepNumber].board)
+    const isXNext = useSelector(state => state.game.moves[stepNumber].isXNext)
     
     const [history, setHistory] = useState([{values, localizacao: []}]);
-    const [stepNumber, setStepNumber] = useState(0);
-
+    
     const gameOver = calculateGameOver(history[stepNumber].values, stepNumber, player1, player2);
     
     const handleClick = (pos, col, row) => {      
@@ -34,11 +35,16 @@ function Game() {
         if(!!gameOver || !!currentValue[pos]) {
             return;
         }
-        
-        dispatch(moveMade({ currentBoardState: currentValue, boardPosition: pos }))
+
+        dispatch(moveMade({ 
+            previousBoard: values, 
+            isXNext: isXNext, 
+            moveNumber: currentHistory.length, 
+            movePosition: pos
+        }))
         
         setHistory(currentHistory.concat([{values: currentValue, localizacao: [col, row]}]));
-        setStepNumber(currentHistory.length);
+        setStepNumber(currentHistory.length); 
     }
 
     const handleInputChange = (event) => {
@@ -70,7 +76,7 @@ function Game() {
 
             <div className="game-board">
                 <Board 
-                    values={history[stepNumber].values} 
+                    values={values} 
                     onClickHandler={handleClick} 
                     highlightWinner={gameOver && gameOver.positions} />
             </div>
