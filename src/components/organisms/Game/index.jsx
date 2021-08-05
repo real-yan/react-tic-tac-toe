@@ -24,27 +24,23 @@ function Game() {
     const values = useSelector(state => state.game.moves[stepNumber].board)
     const isXNext = useSelector(state => state.game.moves[stepNumber].isXNext)
     
-    const [history, setHistory] = useState([{values, localizacao: []}]);
-    
-    const gameOver = calculateGameOver(history[stepNumber].values, stepNumber, player1, player2);
+    const gameOver = calculateGameOver(values, stepNumber, player1, player2);
     
     const handleClick = (pos, col, row) => {      
-        const currentHistory = history.slice(0, stepNumber + 1);
-        const currentValue = currentHistory[currentHistory.length - 1].values.slice(); 
+        const currentValue = values.slice(0, stepNumber + 1);
 
-        if(!!gameOver || !!currentValue[pos]) {
+        if(!!gameOver || !!values[pos]) {
             return;
         }
 
         dispatch(moveMade({ 
             previousBoard: values, 
             isXNext: isXNext, 
-            moveNumber: currentHistory.length, 
-            movePosition: pos
+            moveNumber: currentValue.length, 
+            movePosition: { pos, col, row }
         }))
-        
-        setHistory(currentHistory.concat([{values: currentValue, localizacao: [col, row]}]));
-        setStepNumber(currentHistory.length); 
+
+        setStepNumber(currentValue.length); 
     }
 
     const handleInputChange = (event) => {
@@ -84,10 +80,8 @@ function Game() {
             <div className="game-history">
                 <GameStatus isXNext={isXNext} gameOver={gameOver} players={{player1, player2}} />
                 <History
-                    moveHistory={history}
                     stepNumber={stepNumber}
-                    jumpTo={jumpTo}
-                    gameOver={gameOver} />   
+                    jumpTo={jumpTo} />   
             </div>
         </div>
     )

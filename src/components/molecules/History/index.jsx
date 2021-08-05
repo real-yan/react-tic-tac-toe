@@ -1,23 +1,31 @@
 import React, { useState, useContext } from 'react'
+import { useSelector } from 'react-redux'
 
 import Button from '../../atoms/Button';
 import LangContext from '../../../context/LangContext'
 
-const History = (props) => {
+const History = ({ stepNumber, jumpTo }) => {
     const { currentLangData } = useContext(LangContext);
+
+    const moveHistory = useSelector(state => state.game.moveNumbers.map((_step, move) => {
+        return ({
+            values: state.game.moves[move].board,
+            location: state.game.moves[move].location    
+        })
+    }))
     
     const [reversed, setReversed] = useState(false);
 
     const renderHistory = (reversed) => {
-        const arrMoves = props.moveHistory.map((_step, move) => {
+        const arrMoves = moveHistory.map((_step, move) => {
             return (
                 <li key={move}>
                     <Button 
-                        highlighted={props.stepNumber && props.stepNumber === move} 
-                        onClickHandler={() => props.jumpTo(move)}>
-                        {!move ? 
+                        highlighted={stepNumber && stepNumber === move} 
+                        onClickHandler={() => jumpTo(move)}>
+                        { !move ? 
                             currentLangData.history.start : 
-                            `${currentLangData.history.start}${move} (${props.moveHistory[move].localizacao[0]}, ${props.moveHistory[move].localizacao[1]})`}
+                            `${currentLangData.history.move}${move} (${moveHistory[move].location.col}, ${moveHistory[move].location.row})` }
                     </Button>
                 </li>
             )
@@ -33,7 +41,7 @@ const History = (props) => {
             </ol>
 
             <Button onClickHandler={() => setReversed(!reversed)}>
-                {currentLangData.history.toggle}
+                { currentLangData.history.toggle }
             </Button>
         </>
     )
